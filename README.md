@@ -39,8 +39,8 @@
 
 3. **Доступ к приложению**:
 
-**API**: http://localhost:8080
-**Swagger UI**: http://localhost:8080/swagger-ui.html
+**API**: http://localhost:8080  
+**Swagger UI**: http://localhost:8080/swagger-ui.html  
 **Тестовые пользователи**:
 
 - Администратор:
@@ -57,8 +57,8 @@
 
 - **Требования**:
 
-Java 17+
-PostgreSQL 15+
+Java 17+  
+PostgreSQL 15+  
 Maven 3.8+
 
 - **Настройка базы данных**:
