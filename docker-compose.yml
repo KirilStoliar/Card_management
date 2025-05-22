@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_for_card_management
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: card_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - card-network
+
+  app:
+    build: .
+    container_name: card-app
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres_for_card_management
+      DB_PORT: 5432
+      DB_NAME: card_db
+      DB_USER: admin
+      DB_PASSWORD: admin
+      CARD_ENCRYPTION_KEY: mySuperSecretKey123
+      JWT_SECRET: myJwtSecretKey1234567890
+    ports:
+      - "8080:8080"
+    networks:
+      - card-network
+
+volumes:
+  postgres_data:
+
+networks:
+  card-network:
+    driver: bridge

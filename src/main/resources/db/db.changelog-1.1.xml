@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="2" author="admin">
+        <!-- Тестовый администратор (пароль: admin123) -->
+        <insert tableName="users">
+            <column name="email" value="admin@example.com"/>
+            <column name="password" value="$2a$10$DbjHClDpEBbJUpSUIRXUweUXzAuCr/K50cVM4vclPcCwTg1JtAL0O"/> <!-- bcrypt hash для "admin123" -->
+            <column name="first_name" value="System"/>
+            <column name="last_name" value="Administrator"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+
+        <!-- Тестовый пользователь (пароль: user123) -->
+        <insert tableName="users">
+            <column name="email" value="user@example.com"/>
+            <column name="password" value="$2a$10$vI1jnt3nCzhy9wYinyBOq.YLYCRIs./gqTmsFVT11JrzsUM81ymR."/> <!-- bcrypt hash для "user123" -->
+            <column name="first_name" value="Regular"/>
+            <column name="last_name" value="User"/>
+            <column name="role" value="USER"/>
+        </insert>
+
+        <!-- Карты для администратора -->
+        <insert tableName="cards">
+            <column name="card_number" value="PianL8aqCdlZTH/ADgo8fbH6hnl/ZlnuBJC3P08cpG4="/>
+            <column name="card_holder_name" value="ADMIN USER"/>
+            <column name="expiration_date" valueDate="2026-12-31"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="balance" valueNumeric="10000.00"/>
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='admin@example.com')"/>
+        </insert>
+
+        <!-- Две карты для обычного пользователя -->
+        <insert tableName="cards">
+            <column name="card_number" value="Hh4b2kTJERLYNkxT5mWeb7H6hnl/ZlnuBJC3P08cpG4="/>
+            <column name="card_holder_name" value="REGULAR USER MAIN CARD"/>
+            <column name="expiration_date" valueDate="2025-06-30"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="balance" valueNumeric="5000.00"/>
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='user@example.com')"/>
+        </insert>
+
+        <insert tableName="cards">
+            <column name="card_number" value="ywYjyvnVqLVhqTH5v5HcMLH6hnl/ZlnuBJC3P08cpG4="/>
+            <column name="card_holder_name" value="REGULAR USER SECONDARY CARD"/>
+            <column name="expiration_date" valueDate="2025-06-30"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="balance" valueNumeric="3000.00"/>
+            <column name="user_id" valueComputed="(SELECT id FROM users WHERE email='user@example.com')"/>
+        </insert>
+
+        <!-- 5 транзакций между картами пользователя -->
+        <insert tableName="transactions">
+            <column name="source_card_id" valueComputed="(SELECT id FROM cards WHERE card_number='Hh4b2kTJERLYNkxT5mWeb7H6hnl/ZlnuBJC3P08cpG4=')"/>
+            <column name="target_card_id" valueComputed="(SELECT id FROM cards WHERE card_number='ywYjyvnVqLVhqTH5v5HcMLH6hnl/ZlnuBJC3P08cpG4=')"/>
+            <column name="amount" valueNumeric="300.00"/>
+            <column name="transaction_date" valueDate="2025-01-15"/>
+            <column name="description" value="Ежемесячный перевод"/>
+        </insert>
+
+        <insert tableName="transactions">
+            <column name="source_card_id" valueComputed="(SELECT id FROM cards WHERE card_number='Hh4b2kTJERLYNkxT5mWeb7H6hnl/ZlnuBJC3P08cpG4=')"/>
+            <column name="target_card_id" valueComputed="(SELECT id FROM cards WHERE card_number='ywYjyvnVqLVhqTH5v5HcMLH6hnl/ZlnuBJC3P08cpG4=')"/>
+            <column name="amount" valueNumeric="200.00"/>
+            <column name="transaction_date" valueDate="2025-01-20"/>
+            <column name="description" value="Возврат долга"/>
+        </insert>
+
+        <insert tableName="transactions">
+            <column name="source_card_id" valueComputed="(SELECT id FROM cards WHERE card_number='ywYjyvnVqLVhqTH5v5HcMLH6hnl/ZlnuBJC3P08cpG4=')"/>
+            <column name="target_card_id" valueComputed="(SELECT id FROM cards WHERE card_number='Hh4b2kTJERLYNkxT5mWeb7H6hnl/ZlnuBJC3P08cpG4=')"/>
+            <column name="amount" valueNumeric="450.00"/>
+            <column name="transaction_date" valueDate="2025-02-01"/>
+            <column name="description" value="Накопительный счет"/>
+        </insert>
+
+        <insert tableName="transactions">
+            <column name="source_card_id" valueComputed="(SELECT id FROM cards WHERE card_number='ywYjyvnVqLVhqTH5v5HcMLH6hnl/ZlnuBJC3P08cpG4=')"/>
+            <column name="target_card_id" valueComputed="(SELECT id FROM cards WHERE card_number='Hh4b2kTJERLYNkxT5mWeb7H6hnl/ZlnuBJC3P08cpG4=')"/>
+            <column name="amount" valueNumeric="300.00"/>
+            <column name="transaction_date" valueDate="2025-02-15"/>
+            <column name="description" value="Оплата услуг"/>
+        </insert>
+
+        <insert tableName="transactions">
+            <column name="source_card_id" valueComputed="(SELECT id FROM cards WHERE card_number='Hh4b2kTJERLYNkxT5mWeb7H6hnl/ZlnuBJC3P08cpG4=')"/>
+            <column name="target_card_id" valueComputed="(SELECT id FROM cards WHERE card_number='ywYjyvnVqLVhqTH5v5HcMLH6hnl/ZlnuBJC3P08cpG4=')"/>
+            <column name="amount" valueNumeric="150.00"/>
+            <column name="transaction_date" valueDate="2025-03-01"/>
+            <column name="description" value="Инвестиции"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
